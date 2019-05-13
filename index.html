@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+<head>
+    <title>Piloto Marco de medición Paz USC</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.9">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Edmonton-Open-Data/Edmonton-Bylaw-Infractions-II@master/libs/keen_io/keen-dashboards.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dc-addons@0.13.5/dist/leaflet-map/dc-leaflet-legend.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Edmonton-Open-Data/Edmonton-Bylaw-Infractions-II@master/libs/slideMenu/L.Control.SlideMenu.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="bylaw_infractions.css">
+</head>
+<body class="application">
+    <div id="spinner"></div>
+    <!-- Navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <!--<a class="navbar-brand" href="https://github.com/Edmonton-Open-Data/Edmonton-Bylaw-Infractions-II">-->
+                <a class="navbar-brand">
+                    Piloto ¿Qué si es Paz? Universidad Santiago de Cali - 2019-I
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Makes Row Responsive -->
+    <div id="board" class="container-fluid">
+        <div class="row">
+            <!-- column 1 for row -->
+            <div class="col-lg-4 col-md-4">
+                <!-- row in column 1 -->
+                <div class="row">
+                    <!-- Map -->
+                    <div class="col-lg-12 col-md-12">
+                        <div class="chart-wrapper">
+                            <div class="chart-stage">
+                                <div class="chart-title">
+                                    <span>
+                                        <strong>Mapa USC</strong>
+                                    </span>
+                                </div>
+                                <span id="records-count"></span>
+                                <div id="map-plot"></div>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+            <!-- column 2 for row -->
+            <div class="col-lg-4 col-md-4">
+                <!-- row in column 2 -->
+                <div class="row">
+                    <!-- Row Chart -->
+                    <div class="col-lg-12 col-md-12">
+                        <div class="chart-wrapper">
+                            <div class="chart-stage">
+                                <div id="row-chart" class="svg-container">
+                                    <div class="chart-title">
+                                        <span>
+                                            <strong>Palabras claves de Paz</strong>
+                                        </span>
+                                        <span>
+                                            <a class="reset" style="display:none" href="javascript:rowChart.filterAll(); dc.redrawAll();">
+                                                reset
+                                            </a>
+                                        </span>                                            
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    <!-- Bar Chart -->
+                    <div class="col-lg-12 col-md-12">
+                        <div class="chart-wrapper">
+                            <div class="chart-stage">
+                                <div id="bar-chart" class="svg-container">
+                                    <div class="chart-title">
+                                        <span>
+                                            <strong>Monthly Trends</strong>
+                                        </span>
+                                        <span>
+                                            <a class="reset" style="display:none" href="javascript:barChart.filterAll(); dc.redrawAll();">
+                                                reset
+                                            </a>
+                                        </span>                                            
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                                           
+                </div>
+            </div>
+            <!-- column 3 for row -->
+            <div class="col-lg-4 col-md-4">
+                <!-- row in column 3 -->
+                <div class="row">
+                    <!-- Pie Chart -->
+                    <div class="col-lg-12 col-md-12">
+                        <div class="chart-wrapper">
+                            <div class="chart-stage">
+                                <div id="pie-plot" class="svg-container">
+                                    <div class="chart-title">
+                                        <span>
+                                            <strong>
+                                                Types of Complaint
+                                            </strong>
+                                        </span>
+                                        <span>
+                                            <a class="reset" style="display:none" href="javascript:pie.filterAll(); dc.redrawAll();">
+                                                reset
+                                            </a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Bubble Cloud
+                    <div class="col-lg-12 col-md-12">
+                        <div class="chart-wrapper">
+                            <div class="chart-stage">
+                                <div id="bubble-plot" class="svg-container">
+                                    <div class="chart-title">
+                                        <span>
+                                            <strong>
+                                                Initiators and Status
+                                            </strong>
+                                        </span>
+                                        <span>
+                                            <a class="reset" style="display:none" href="javascript:bubbleChart.filterAll(); dc.redrawAll();">
+                                                reset
+                                            </a>
+                                        </span>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- my_chart -->
+                    <div class="col-lg-12 col-md-12">
+                        <div class="chart-wrapper">
+                            <div class="chart-stage">
+                                <div id="my_chart" class="svg-container">
+                                    <div class="chart-title">
+                                        <span>
+                                            <strong>
+                                                Initiators and Status
+                                            </strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-queue/1.2.3/queue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Edmonton-Open-Data/Edmonton-Bylaw-Infractions-II@master/libs/slideMenu/L.Control.SlideMenu.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Edmonton-Open-Data/Edmonton-Bylaw-Infractions-II@master/libs/dc_addons/base-map-chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dc-addons@0.13.5/src/scripts/base-leaflet-chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dc-addons@0.13.5/src/scripts/leaflet-choropleth-chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dc-addons@0.13.5/src/scripts/bubble-cloud.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dc-addons@0.13.5/src/scripts/leaflet-legend.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/sankey.js"></script>
+    <script src="https://code.highcharts.com/modules/dependency-wheel.js"></script>
+    
+
+    <script src="bylaw_infractions.js"></script>
+</body>
+</html>
