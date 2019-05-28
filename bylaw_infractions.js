@@ -57,382 +57,235 @@ document.addEventListener("DOMContentLoaded", function dashboard() {
             distance: 10
           },
           size: '95%'
-        }]
+        }],
+
+        
       
       });
+
+
+
+      var categories = [
+        'Amor',
+        'Comunidad',        
+        'Convivencia',
+        'Démas personas',
+        'Derecho al espacio público',
+        'Derechos sociales', 
+        'Educación',
+        'Empleo', 
+        'Espiritualidad',
+        'Familia/Hogar',
+        'Libertad',         
+        'Naturaleza',        
+        'No discriminación',
+        'No violencia',  
+        'Perdón',
+        'Reconciliación',
+        'Reconocimento',
+        'Respeto',
+        'Salud',
+        'Tradiciones familiares', 
+        'Tranquilidad',
+        'Vecinos/Amigos',
+        'Parques/Zonas verdes',];
+      
+      Highcharts.chart('my_chart2', {
+        chart: {
+          type: 'bar'
+        },
+        title: {
+          text: 'Palabras asociadas a la Paz'
+        },
+        subtitle: {
+          text: 'Distribución po sexo'
+        },
+        xAxis: [{
+          categories: categories,
+          reversed: false,
+          labels: {
+            step: 1
+          }
+        }, { // mirror axis on right side
+          opposite: true,
+          reversed: false,
+          categories: categories,
+          linkedTo: 0,
+          labels: {
+            step: 1
+          }
+        }],
+        yAxis: {
+          title: {
+            text: null
+          },
+          labels: {
+            formatter: function () {
+              return Math.abs(this.value) + '%';
+            }
+          }
+        },
+      
+        plotOptions: {
+          series: {
+            stacking: 'normal',
+          }
+        },
+      
+        tooltip: {
+          formatter: function () {
+            return '<b>' + this.series.name + '% ' + this.point.category + '</b><br/>' +
+              ':' + Highcharts.numberFormat(Math.abs(this.point.y), 2);
+          }
+        },
+   
+        series: [{
+          name: 'Hombre',
+          data: [
+            -3.1, -0.8, -3.6, -0.1,
+            -0.2, -1.0, -1.3, -0.2, 
+            -1.3, -2.5, -2.9, -1.6, 
+            -1.3, -2.9, -1.9, -1.4, 
+            -0.4, -4.7, -1.3, -0.2,
+            -5.1, -0.6, -0.6
+          ],
+          
+        }, {
+          name: 'Mujer',
+          data: [
+            5.2, 0.9, 4.8, 0.3, 0.5,
+            1.4, 1.4, 0.2, 2.6, 4.1,
+            4.5, 2.8, 2.5, 4.4, 3.6,
+            2.7, 0.6, 7.0, 1.3, 0.3,
+            7.8, 0.7, 0.9
+          ],
+          color:
+          '#c39bd3'
+        }],
+
+        color: ['#FF0000','#ffffff']
+
+      });
+
+
+
+      Highcharts.chart('my_chart3', {
+        series: [{
+          type: 'wordcloud',
+          data: [
+          {name:'tranquilidad',weight:278},
+          {name:'armonía',weight:75},
+          {name:'amor',weight:51},
+          {name:'respeto',weight:36},
+          {name:'convivencia',weight:32},
+          {name:'libertad',weight:30},
+          {name:'paz',weight:28},
+          {name:'familia',weight:26},
+          {name:'vivir',weight:25},
+          {name:'tener',weight:22},
+          {name:'demás',weight:21},
+          {name:'igualdad',weight:20},
+          {name:'mismo',weight:19},
+          {name:'personas',weight:17},
+          {name:'tolerancia',weight:17},
+          {name:'tranquilo',weight:16},
+          {name:'violencia',weight:15},
+          {name:'música',weight:14},
+          {name:'equidad',weight:13},
+          {name:'bien',weight:13},
+          {name:'dios',weight:11},
+          {name:'seguridad',weight:11},
+          {name:'sociedad',weight:11},
+          {name:'felicidad',weight:10},
+          {name:'guerra',weight:9},
+          {name:'reconciliación',weight:9},
+          {name:'tranquila',weight:8},
+          {name:'comunidad',weight:8},
+          {name:'social',weight:8},
+          {name:'conflicto',weight:7},
+          {name:'unión',weight:7},
+          {name:'equilibrio',weight:7},
+          {name:'convivir',weight:7},
+          {name:'sana',weight:7},
+          {name:'dormir',weight:6},
+          {name:'calma',weight:6},
+          {name:'emocional',weight:5},
+          {name:'naturaleza',weight:5},
+          {name:'oportunidades',weight:5},
+          {name:'mundo',weight:5},
+          {name:'justicia',weight:5},
+          {name:'solidaridad',weight:5},
+          {name:'plenitud',weight:5},
+          {name:'entorno',weight:5}
+          ],
+          name: 'Occurrences'
+        }],
+        title: {
+          text: 'Nube de palabras - Narativas de Paz USC'
+        }
+      });
+
 
    
      var target = document.getElementById("spinner");
      var spinner = new Spinner(opts).spin(target);
+     
      queue()
             .defer(d3.json, "data/Edmonton2.json") //neighbourhoodsGejson
-            .defer(d3.json, "data/data.json")     //datajson
-            .defer(d3.json, "data/dataUSC.json")     //datajson
+            .defer(d3.json, "data/dataUSC.json")   //datajson
             .await(renderCharts);
   
-     function renderCharts(error, neighbourhoodsGejson, dataJson, dataUSCJson) {
+     function renderCharts(error, neighbourhoodsGejson, dataUSC) {
  
          if(error) throw error;
          
          //cleaned data
-         var data  = dataJson.data;
-         var data2  = dataUSCJson.data;
+         var data  = dataUSC.data;
          
          //Crossfilter instance
          var ndx = crossfilter(data);
-         var ndx2 = crossfilter(data2);
+         var all = ndx.groupAll();
          
-         //Define values to be used by chart(s)
-         var chartHeightScale = 0.58,
-             pieXscale        = 1.41,
-             pieRscale        = chartHeightScale * 0.5,
-             pieInnerRscale   = pieRscale * 0.52,
-             monthNames       = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-             countSum         = data.map(function(d) { return d.COUNT; })
-                                    .reduce(function(sum, value) { return sum + value; }, 0 ),
-             map, info, mapReset, title, texts, chartTexts, slideMenu;
- 
-         //Colors and color scales
-         //Got the colors from http://colorbrewer2.org
-         var pieColors         = ["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854"],
-             mapColors         = ["#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00"],
-             bubbleColors      = ["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c"],
-             pieScaleColors    = d3.scale.quantize().domain([0, pieColors.length - 1]).range(pieColors),
-             bubbleScaleColors = d3.scale.quantize().domain([0, bubbleColors.length - 1]).range(bubbleColors);
- 
-         //Define Dimensions
-         var neighbourhoodsDim = ndx.dimension(function(d) { return d.NEIGHBOURHOOD; }),
-             complaintsDim     = ndx.dimension(function(d) { return d.COMPLAINT; }),
-             monthDim          = ndx.dimension(function(d) { return monthNames[d["MONTH_NUMBER"] - 1]; }),
-             yearDim           = ndx.dimension(function(d) { return d.YEAR; }),
-             initiatorDim      = ndx.dimension(function(d) { return [d["INITIATED_BY"], d.STATUS]; });
-
-         //Define Dimensions
-         var componentesDim    = ndx2.dimension(function(d) { return d.facultad; })
-         var sexoDim           = ndx2.dimension(function(d) { return d.sexo});
-
-
-          
-         //Define groups
-         var groupByCount        = function(d) { return d.COUNT; },
-             neighbourhoodsGroup = neighbourhoodsDim.group().reduceSum(groupByCount),
-             complaintsGroup     = complaintsDim.group().reduceSum(groupByCount),
-             monthGroup          = monthDim.group().reduceSum(groupByCount),
-             yearGroup           = yearDim.group().reduceSum(groupByCount),
-             statusGroup         = initiatorDim.group().reduceSum(groupByCount),  
-             sumofAllInfractions = ndx.groupAll().reduceSum(groupByCount);
-       
-        //Define groups
-         var groupByCount        = function(d) { return d.COUNT; },
-             componentesGroup    = componentesDim.group().reduceSum(groupByCount),
-             sexoGroup           = sexoDim.group().reduceSum(groupByCount);         
+         
+        //Define Dimensions
+         var sexoDim           = ndx.dimension(function(d) { return d['sexo'];}),
+             cargoDim          = ndx.dimension(function(d) { return d['cargo'];}),
+             facultadDim       = ndx.dimension(function(d) { return d['facultad']}),
+             programaDim       = ndx.dimension(function(d) { return d['programa']});
         
- 
-         //Charts, selections, and filterCount(no var to be detected by reset link)
-         //find better solution to make code secure("use strict wont allow this")
-             dcMap               = dc.leafletChoroplethChart("#map-plot"),
-             pie                 = dc.pieChart("#pie-plot"),
-             barChart            = dc.barChart("#bar-chart"),
-             rowChart            = dc.rowChart("#row-chart");
-             //bubbleChart         = dc.bubbleCloud("#bubble-plot");
-         var recordCounter       = dc.dataCount("#records-count"),       
-             charts, neighbourSelections;
- 
-         recordCounter.dimension(ndx)
-                      .group(ndx.groupAll())
-                      .html({some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records. | '+
-                                  '<a href= "javascript:dc.filterAll(); dc.redrawAll();">Reset All</a>',
-                             all: 'All records selected. Please click on the chart(s) to apply filters.'
-                            });
-         recordCounter.render();
- 
-         charts = [dcMap, pie, barChart, rowChart];
- 
-         //add filter listerner to update sum and percentage text
-         // for all the charts
-         charts.forEach(statsUpdate);
- 
-         dcMap
-              .dimension(neighbourhoodsDim)
-              .group(neighbourhoodsGroup)          
-              .mapOptions({
-                 center:          [3.402872, -76.548788],
-                 zoom:            10,
-                 scrollWheelZoom: false,
-                 minZoom:         16,
-                 maxZoom:         20,
-                 touchZoom:       false
-              })
-              .geojson(neighbourhoodsGejson)
-              .valueAccessor(function(d) { return d.value; })
-              .colors(mapColors)
-              .colorAccessor(function(d) { return d.value; })
-              .featureKeyAccessor(function(feature) { return feature.properties.name; })
-              .legend(dc.leafletLegend().position("bottomright"))
-              .on("renderlet.dcMap",  function infractionMapInfoUpdate(chart, filter) {
-                 eventTrigger(function updater() {
-                     //get all the feature layers
-                     var eArray = Object.values(chart.map()._layers)
-                     .filter(function(e) { if( e.hasOwnProperty("feature") ) return e; } );
- 
-                     //get path(layer) popupContent and update the map info
-                     eArray.forEach(function(layer) {
-                         chart.map()._layers[layer._leaflet_id].on("mouseover", function() { 
- 
-                             info.update(layer);
-                         });
-                     });
-                 });
-              })
-              .on("preRender.dcMap", colorUpdate)
-              .on("preRedraw.dcMap", colorUpdate);
- 
-/*          rowChart.dimension(yearDim)
-                 .group(yearGroup)
-                 .height(setHeight(rowChart))
-                 .margins(chartMargin(rowChart, {top: 0.02, right: 0.02, bottom: 0.10, left:0.02}))
-                 .useViewBoxResizing(true)
-                 .label(function(d) { return d.key; })
-                 .title(function(d) { return d.value.toLocaleString(); })
-                 .elasticX(true)
-                 .on("pretransition.xAxis", fontSizeUpdate("row-chart"));
-         rowChart.xAxis().ticks(6); */
-         
-         rowChart.dimension(componentesDim)
-                 .group(componentesGroup)
-                 .height(setHeight(rowChart))
-                  .margins(chartMargin(rowChart, {top: 0.02, right: 0.02, bottom: 0.10, left:0.02}))
-                  .useViewBoxResizing(true)
-                 .label(function(d) { return d.key; })
-                 .title(function(d) { return d.value.toLocaleString(); })
-                 .elasticX(true)
-                 .on("pretransition.xAxis", fontSizeUpdate("row-chart"));
-        rowChart.xAxis().ticks(6); 
+        
+        //Define groups
 
- 
-        /* barChart.dimension(monthDim)
-                 .group(monthGroup)
-                 .height(setHeight(barChart))
-                 .margins(chartMargin(barChart, {top: 0.02, right: 0.02, bottom: 0.10, left:0.12}))
-                 .useViewBoxResizing(true)
-                 .title(function(d) { return d.value.toLocaleString(); })
-                 .x(d3.scale.ordinal().domain(monthNames))
-                 .xUnits(dc.units.ordinal)
-                 .elasticY(true)
-                 .on("pretransition.Axis", fontSizeUpdate("bar-chart"));
-         barChart.xAxis().ticks(6);*/
-         
- 
-         pie
-            .dimension(sexosDim) //complaintsDim
-            .group(sexoGroup) //complaintsGroup
-            .height(setHeight(pie))
-            .cx(pie.width() / pieXscale)
-            .radius(pie.width() * pieRscale)
-            .innerRadius(pie.width() * pieInnerRscale)
-            .useViewBoxResizing(true)
-            .label(function(d) { return ((d.value / countSum) * 100).toFixed(3) + '%'; })
-            .title(function(d) { return d.key + ': ' + ((d.value / countSum) * 100).toFixed(3) + '%'; })
-            .colorAccessor(function(d, i) {return i; })
-            .colors(pieScaleColors)
-            .legend(dc.legend()
-                      .y(Math.round(pie.height() * 0.02 , 1))
-                      .gap(Math.round(pie.height() * 0.02 , 1))
-             )
-            .on("pretransition.legend", function legendDynamicText(chart) { 
-                 eventTrigger(function textUpdater() {
-                     //https://github.com/dc-js/dc.js/blob/master/web/examples/pie-external-labels.html
-                     //solution for adding dynamic text to legend
-                     chart.selectAll(".dc-legend-item text")   
-                          .text('')
-                          .append("tspan")
-                          .text(function(d) { return d.name; })
-                          .style("font-size", Math.round(chart.height() * 0.04, 1))
-                          .append("tspan")
-                          .attr('x', Math.round(pie.width() * 0.41, 1))
-                          .attr('text-anchor', 'end')
-                          .text(function(d) { return d.data.toLocaleString(); })
-                          .style("font-size", Math.round(chart.height() * 0.04, 1));
-                 });
-             });
- 
-/*          bubbleChart
-                    .dimension(initiatorDim)
-                    .group(statusGroup)
-                    .height(setHeight(bubbleChart))
-                    .useViewBoxResizing(true)
-                    .margins(chartMargin(barChart, {top: 0.15, right:  0.1428, bottom: 0.15, left: 0.1428}))
-                    .clipPadding(55)
-                    .radiusValueAccessor(function(d) { return d.value; })
-                    .maxBubbleRelativeSize(0.24)
-                    .r(d3.scale.linear()
-                         .domain( d3.extent( bubbleChart.group().all(), bubbleChart.valueAccessor() ) ) 
-                     )
-                    .elasticRadius(true)
-                    .x(d3.scale.ordinal())
-                    .label(function(d) { return d.key[0]+": "+d.key[1]; })
-                    .title(function(d) { return '('+d.key[0]+')'+d.key[1] + ': ' + d.value.toLocaleString(); })
-                    .colorAccessor(function(d, i) { return i; })
-                    .colors(bubbleScaleColors); */
- 
+         var sexoGroup           = sexoDim.group(),
+             cargoGroup          = cargoDim.group(),
+             facultadGroup       = facultadDim.group(),
+             programaGroup       = programaDim.group();
+
+        //Define charts
+         var sexoChart = dc.rowChart("#row-chart");
+         var cargoChart = dc.rowChart("#row-chart");
+         var facultadChart = dc.rowChart("#bar-chart");
+
+
+        //Charts
+
+        sexoChart
+            .dimension(sexoDim)
+            .group(sexoGroup);
+
+        cargoChart
+            .dimension(sexoDim)
+            .group(sexoGroup);
+
+        facultaChart
+            .dimension(sexoDim)
+            .group(sexoGroup);
+
+
+
          dc.renderAll();
  
-         //Choropleth map
-         map = dcMap.map();
- 
-         //reset map location when window is resized
-         map.on("resize", function(e) { map.setZoom(10).getBounds().getCenter(); });
- 
-         //----------------------------Additions to leaflet map----------------------------
-         //SlideMenu, dc reset, and map info
-         //https://github.com/unbam/Leaflet.SlideMenu
-         title     = '<h3>Neighbourhood Selection</h3>',
-         contents  = '<div id="selection" class="svg-container"></div>',
-         slideMenu = L.control.slideMenu('', {position: 'topright', menuposition: 'topright', width: '70%', height: '45%', delay: '50'}).addTo(map);
- 
-         slideMenu.setContents(title + contents);
- 
-         //http://leafletjs.com/examples/choropleth.html
-         info       = L.control({position: "bottomleft"});
-         info.onAdd = function(map) {
-             this._div = L.DomUtil.create("div", "myinfo");
-             this.update();
-             return this._div;
-         };
-         info.update = function(e) {
-             this._div.innerHTML = "<span><strong>Neighbourhood Infractions</strong></span><br>" + (e ? 
-             "<span>"+e._popupContent+"</span>": "Hover over a map region");
-         };
- 
-         info.addTo(map);
- 
-         neighbourSelections = dc.selectMenu("#selection");
- 
-         //add filter listerner to update sum and percentage text
-         statsUpdate(neighbourSelections);
- 
-         neighbourSelections.dimension(neighbourhoodsDim)
-                             .group(neighbourhoodsGroup)
-                             .multiple(true)
-                             .numberVisible(11)
-                             .controlsUseVisibility(true)
-                             .order(function (a,b) { return a.value > b.value ? 1 : b.value > a.value ? -1 : 0; }); 
-         neighbourSelections.render();
-         //----------------------------Additions to leaflet map----------------------------
-     
-         //---------------------------Addition to Pie Chart Sum and Percentage Stats---------------------------
-         texts = [   
-             {
-                 class:         "stats-title", 
-                 x:             0, 
-                 y:             pie.height() * 0.97, 
-                 content:       "Sum:", 
-                 "text-anchor": "start"
-             },
-                 
-             {
-                 id:            "sum", 
-                 x:             pie.width() * 0.13, 
-                 y:             pie.height() * 0.97, 
-                 content:       sumofAllInfractions.value().toLocaleString(), 
-                 "text-anchor": "start",
-                 "font-size":   Math.round(pie.height() * 0.14, 1)
-             },
- 
-             {
-                 class:         "stats-title",
-                 x:             pie.cx(), 
-                 y:             pie.height() * 0.46, 
-                 content:       "Percentage:",
-                 "text-anchor": "middle",
-             },
- 
-             {
-                 id:            "percent", 
-                 x:             pie.cx(), 
-                 y:             pie.height() * 0.58, 
-                 content:       ((sumofAllInfractions.value()/countSum) * 100).toFixed(3),
-                 "text-anchor": "middle",
-                 "font-size":   Math.round(pie.height() * 0.12, 1)
-             }                       
-         ];
- 
-         d3.select("#pie-plot svg")
-           .selectAll(".stats text")
-           .data(texts).enter()
-           .append("text")
-           .classed("stats", true)
-           .style( "font-size", function(d) { return d["font-size"] ? d["font-size"] : Math.round(pie.height() * 0.08, 1); } )
-           .text(function(d) { return d.content; })
-           .attr({
-                     id:            function(d) { return d.id ? d.id : ""; },
-                     class:         function(d) { return d.class ? d.class : ""; },
-                     x:             function(d) { return d.x; },
-                     y:             function(d) { return d.y; },
-                     "text-anchor": function(d) { return d["text-anchor"]; }
-          });
-         //---------------------------Addition to Pie Chart Sum and Percentage Stats---------------------------
-     
-         //------------Font Size for legend and label texts------------
-         chartTexts = [
-             {selector: "text.pie-slice"      , scale: 0.05}, 
-             {selector: "text.row"            , scale: 0.05}, 
-             {selector: "g.node text"         , scale: 0.04}
-         ];
- 
-         chartTexts.forEach(function(text){textFontSize(text.selector, text.scale); });
-         //------------Font Size for axis and label texts------------
- 
-         d3.select("#spinner").remove(); //remove spinner after files and charts are loaded
- 
-         function setHeight(chart) { return chart.width() * chartHeightScale; };
- 
-         function textFontSize(selector, scale) {
-             d3.selectAll(selector)
-               .style("font-size", Math.round(pie.height() * scale, 1));        
-         };    
- 
-         function statsUpdate(chart) {
-             chart.on("filtered." + chart.chartID(), function() {
-                 eventTrigger(function htmlUpdater() {
-                     //update the sum text
-                     d3.select("#sum").html( sumofAllInfractions.value().toLocaleString() );
- 
-                     //update the percent text
-                     d3.select("#percent").html( ((sumofAllInfractions.value()/countSum) * 100).toFixed(3) );
-                 });
-             });
-         };  
-         
-         function colorUpdate(chart, filter) {
-             eventTrigger(function() {
-                 //update color domain to correspond with user filters
-                 chart.calculateColorDomain( d3.extent(chart.group().all(), chart.valueAccessor()) ); 
-             });
-  
-          };
- 
-          function fontSizeUpdate(chartId) {
-             return function(chart, filter) {
-                         eventTrigger(function sizeUpdater() {
-                             chart.selectAll("#"+chartId+" g.tick text")
-                                  .style("font-size", Math.round(chart.height() * 0.05, 1));
-                         });
-                     };
-         };
- 
-         function chartMargin(chart, margin) {
-             return {
-                         top:    Math.round(chart.height() * margin.top , 1),
-                         right:  Math.round(chart.width() * margin.right , 1),
-                         bottom: Math.round(chart.height() * margin.bottom , 1),
-                         left:   Math.round(chart.width() * margin.left , 1)
-                     };
-         };
- 
-         function eventTrigger(func){
-             return dc.events.trigger(func);
-         };
+        
  
      }; //renderCharts
  })//document.addEventListener
