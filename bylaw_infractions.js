@@ -167,7 +167,13 @@ document.addEventListener("DOMContentLoaded", function dashboard() {
 
       });
 
-
+// Include this snippet after loading Highcharts and before Highcharts.chart is executed.
+Highcharts.seriesTypes.wordcloud.prototype.deriveFontSize = function (relativeWeight) {
+  var maxFontSize = 15;
+  var minFontSize = 10;
+ // Will return a fontSize between 0px and 25px.
+ return Math.floor(minFontSize /* * relativeWeight*/);
+};
 
       Highcharts.chart('my_chart3', {
         series: [{
@@ -189,15 +195,15 @@ document.addEventListener("DOMContentLoaded", function dashboard() {
           {name:'personas',weight:17},
           {name:'tolerancia',weight:17},
           {name:'tranquilo',weight:16},
-          {name:'violencia',weight:15},
+          {name:'no violencia',weight:15},
           {name:'música',weight:14},
           {name:'equidad',weight:13},
           {name:'bien',weight:13},
-          {name:'dios',weight:11},
+          {name:'Díos',weight:11},
           {name:'seguridad',weight:11},
           {name:'sociedad',weight:11},
           {name:'felicidad',weight:10},
-          {name:'guerra',weight:9},
+          {name:'no guerra',weight:9},
           {name:'reconciliación',weight:9},
           {name:'tranquila',weight:8},
           {name:'comunidad',weight:8},
@@ -218,7 +224,7 @@ document.addEventListener("DOMContentLoaded", function dashboard() {
           {name:'plenitud',weight:5},
           {name:'entorno',weight:5}
           ],
-          name: 'Occurrences'
+          name: 'Frecuencia'
         }],
         title: {
           text: 'Nube de palabras - Narativas de Paz USC'
@@ -262,8 +268,8 @@ document.addEventListener("DOMContentLoaded", function dashboard() {
              programaGroup       = programaDim.group();
 
         //Define charts
-         var sexoChart = dc.rowChart("#row-chart");
-         var cargoChart = dc.rowChart("#row-chart");
+         var sexoChart = dc.rowChart("#row-chart1");
+         var cargoChart = dc.rowChart("#row-chart2");
          var facultadChart = dc.rowChart("#bar-chart");
 
 
@@ -274,12 +280,12 @@ document.addEventListener("DOMContentLoaded", function dashboard() {
             .group(sexoGroup);
 
         cargoChart
-            .dimension(sexoDim)
-            .group(sexoGroup);
+            .dimension(cargoDim)
+            .group(cargoGroup);
 
-        facultaChart
-            .dimension(sexoDim)
-            .group(sexoGroup);
+        facultadChart
+            .dimension(facultadDim)
+            .group(facultadGroup);
 
 
 
